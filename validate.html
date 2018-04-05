@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Validity Check</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+</head>
+<body>
+<div id="app1">
+    <label for="eId">Enter your email id:</label>
+    <input type="text" id="eId" v-model="emailId" />
+    <p v-if ="validation()" >This is a valid Email Id</p>
+    <p v-if ="!validation()">This is an invalid Email Id</p>
+</div>
+<script>
+    let app = new Vue({
+        el: '#app1',
+        data: {
+            emailId: '',
+            afterDot: ''
+        },
+        methods: {
+
+            isAlphaNumeric: function(str) {
+                if(str !== null && str !== undefined) {
+                    let code, i, len;
+
+                    for (i = 0, len = str.length; i < len; i++) {
+                        code = str.charCodeAt(i);
+                        if (str !== this.afterDot) {
+                            if (!(code > 47 && code < 58) && // numeric (0-9)
+                                !(code > 96 && code < 123)) { // lower alpha (a-z)
+                                return false;
+                            }
+                        }
+                        else {
+                            if (!(code > 96 && code < 123)) { // lower alpha (a-z)
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            },
+
+            validation: function(){
+                if(this.emailId.includes('@')) {
+                    let split1 = this.emailId.split('@');
+                    let beforeAt = split1[0];
+                    let afterAt = split1[1];
+                    let split2 = afterAt.split('.');
+                    let beforeDot = split2[0];
+                    this.afterDot = split2[1];
+                    if ((split1[2]==undefined) && (split2[2]==undefined) && this.isAlphaNumeric(beforeAt)
+                        && this.isAlphaNumeric(beforeDot) && this.isAlphaNumeric(this.afterDot)
+                        && (this.afterDot.length === 2 || this.afterDot.length === 3)) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+        }
+    });
+
+
+</script>
+</body>
+</html>
